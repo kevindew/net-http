@@ -32,6 +32,8 @@ class Net::HTTPResponse
       res = response_class(code).new(httpv, code, msg)
       each_response_header(sock) do |k,v|
         res.add_field k, v
+      rescue ArgumentError => e
+        raise Net::HTTPHeaderSyntaxError, e.message
       end
       res
     end

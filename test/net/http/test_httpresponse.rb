@@ -679,6 +679,21 @@ EOS
     end
   end
 
+  def test_raises_header_syntax_exception_for_invalid_header
+    io = dummy_io(<<EOS)
+HTTP/1.1 404
+Content-Length: 5
+Bad-Header: Header with \r character
+Connection: close
+
+hello
+EOS
+
+    assert_raise Net::HTTPHeaderSyntaxError do
+      Net::HTTPResponse.read_new(io)
+    end
+  end
+
   def test_read_code_type
     res = Net::HTTPUnknownResponse.new('1.0', '???', 'test response')
     assert_equal Net::HTTPUnknownResponse, res.code_type
